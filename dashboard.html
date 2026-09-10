@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGENTIC · ••••3051 — Trading Console</title>
+<style>
+  :root {
+    --bg: #05070a;
+    --panel-bg: #0a0f0d;
+    --panel-border: #1e2b22;
+    --amber: #ffb000;
+    --amber-dim: #7a5600;
+    --amber-glow: rgba(255,176,0,0.35);
+    --green: #2ee66b;
+    --red: #ff4d4d;
+    --text-main: #d7e6da;
+    --text-dim: #6f8a78;
+    --font: "SFMono-Regular", "Consolas", "Liberation Mono", "Courier New", monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text-main);
+    font-family: var(--font);
+  }
+
+  body {
+    padding: 20px 16px 48px;
+    min-height: 100vh;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px 24px;
+    border: 1px solid var(--panel-border);
+    background: linear-gradient(180deg, #0c120e, #070a08);
+    padding: 16px 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 24px rgba(255,176,0,0.04) inset;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px 2px var(--green);
+    flex-shrink: 0;
+  }
+  .status-dot.amber { background: var(--amber); box-shadow: 0 0 10px 2px var(--amber); }
+  .status-dot.red { background: var(--red); box-shadow: 0 0 10px 2px var(--red); }
+
+  .acct-name {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .acct-name b {
+    color: var(--amber);
+    letter-spacing: 0.02em;
+  }
+
+  .header-right {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+
+  .hdr-metric { text-align: right; }
+  .hdr-metric .label {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .hdr-metric .value {
+    font-size: 20px;
+    color: var(--amber);
+    font-weight: 700;
+  }
+  .hdr-metric .value.neutral { color: var(--text-main); }
+  .hdr-metric .value.pos { color: var(--green); }
+  .hdr-metric .value.neg { color: var(--red); }
+
+  /* ---------- Hero tiles ---------- */
+  .hero-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+  }
+
+  .tile {
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    border-radius: 4px;
+    padding: 14px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tile::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--amber-dim);
+  }
+  .tile.lead::before { background: var(--amber); box-shadow: 0 0 8px var(--amber-glow); }
+
+  .tile .t-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .tile .t-value {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1;
+  }
+  .tile .t-value.pos { color: var(--green); }
+  .tile .t-value.neg { color: var(--red); }
+  .tile .t-value.amber { color: var(--amber); }
+  .tile .t-sub {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* ---------- Section panels ---------- */
+  .panel {
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    border-radius: 4px;
+    margin-top: 18px;
+    padding: 16px 18px 18px;
+  }
+  .panel-title {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-title::before { content: "▸"; color: var(--amber-dim); }
+
+  .empty-state {
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 18px 4px;
+    border: 1px dashed var(--panel-border);
+    border-radius: 3px;
+    text-align: center;
+  }
+
+  /* position cards */
+  .pos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .pos-card {
+    border: 1px solid var(--panel-border);
+    border-radius: 3px;
+    padding: 12px 14px;
+    background: #070b09;
+  }
+  .pos-card .pc-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .pos-card .pc-sym { font-size: 16px; font-weight: 700; color: var(--text-main); }
+  .pos-card .pc-strat { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+  .pos-card .pc-pnl { font-size: 15px; font-weight: 700; }
+  .bar-row { margin-top: 6px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-bottom: 3px; }
+  .bar-track { height: 6px; border-radius: 3px; background: #10201a; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-fill.stop { background: var(--red); }
+  .bar-fill.target { background: var(--green); }
+
+  /* trades table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--panel-border);
+    white-space: nowrap;
+  }
+  th {
+    color: var(--text-dim);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  td.pos { color: var(--green); }
+  td.neg { color: var(--red); }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    letter-spacing: 0.05em;
+  }
+  .tag.organic { background: rgba(46,230,107,0.12); color: var(--green); border: 1px solid rgba(46,230,107,0.3); }
+  .tag.forced { background: rgba(255,176,0,0.12); color: var(--amber); border: 1px solid rgba(255,176,0,0.3); }
+
+  .table-scroll { overflow-x: auto; }
+
+  /* regime chips */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .chip {
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--panel-border);
+    color: var(--text-dim);
+    background: #070b09;
+  }
+  .chip.up { color: var(--green); border-color: rgba(46,230,107,0.3); }
+  .chip.down { color: var(--red); border-color: rgba(255,77,77,0.3); }
+  .regime-note {
+    font-size: 12.5px;
+    color: var(--text-main);
+    border-top: 1px solid var(--panel-border);
+    padding-top: 10px;
+    margin-top: 4px;
+  }
+  .regime-note .rn-label { color: var(--text-dim); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 4px; }
+
+  /* equity chart */
+  .chart-wrap { width: 100%; }
+  svg text { font-family: var(--font); }
+
+  /* footer */
+  .footer-note {
+    margin-top: 22px;
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    border-top: 1px solid var(--panel-border);
+    padding-top: 12px;
+  }
+  .footer-note b { color: var(--amber-dim); }
+
+  @media (max-width: 560px) {
+    .header-right { justify-content: flex-start; gap: 18px; }
+    .hdr-metric { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="status-dot" id="statusDot"></div>
+      <div>
+        <div class="acct-name">ROBINHOOD // <b>AGENTIC</b> · ••••3051</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="hdr-metric">
+        <div class="label">Equity</div>
+        <div class="value neutral" id="hdrEquity">$100.00</div>
+      </div>
+      <div class="hdr-metric">
+        <div class="label">Today's P&amp;L</div>
+        <div class="value neutral" id="hdrPnlDollar">$0.00</div>
+      </div>
+      <div class="hdr-metric">
+        <div class="label">Today's P&amp;L %</div>
+        <div class="value neutral" id="hdrPnlPct">0.00%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-row">
+    <div class="tile lead">
+      <div class="t-label">Today's P&amp;L</div>
+      <div class="t-value neutral" id="heroPnl">$0.00</div>
+      <div class="t-sub">0 trades closed today</div>
+    </div>
+    <div class="tile lead">
+      <div class="t-label">Open Positions</div>
+      <div class="t-value amber" id="heroOpenCount">0 / 3</div>
+      <div class="t-sub">slots available</div>
+    </div>
+    <div class="tile">
+      <div class="t-label">Account Equity</div>
+      <div class="t-value" id="heroEquity">$100.00</div>
+      <div class="t-sub">peak: $100.00 · drawdown 0.0%</div>
+    </div>
+    <div class="tile">
+      <div class="t-label">Avg Trade Score</div>
+      <div class="t-value" id="heroScore">—</div>
+      <div class="t-sub">no closed trades yet</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Open Positions</div>
+    <div class="pos-grid" id="posGrid">
+      <div class="empty-state">No open positions. Framework initialized — awaiting first scan cycle.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Recent Closed Trades</div>
+    <div class="table-scroll">
+      <table id="tradesTable">
+        <thead>
+          <tr>
+            <th>Symbol</th><th>Strategy</th><th>Entry</th><th>Exit</th><th>P&amp;L</th><th>R</th><th>Score</th><th>Tag</th>
+          </tr>
+        </thead>
+        <tbody id="tradesBody">
+        </tbody>
+      </table>
+      <div class="empty-state" id="tradesEmpty">No closed trades yet. Minimum 1 trade/day enforced (forced trades tagged separately from organic).</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Regime Read</div>
+    <div class="chip-row" id="regimeChips">
+      <span class="chip">SPX — awaiting first cycle</span>
+      <span class="chip">SECTORS — awaiting first cycle</span>
+    </div>
+    <div class="regime-note">
+      <span class="rn-label">Last cycle interpretation</span>
+      <span id="regimeNote">No cycles run yet. Regime read will populate here — price divergence first, news second, per framework.md §2.3.</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Equity — Session History</div>
+    <div class="chart-wrap" id="chartWrap"></div>
+  </div>
+
+  <div class="footer-note">
+    <b>Static snapshot, not a live feed.</b> This dashboard reflects data as of the last time it was regenerated from <b>state.md</b> — reopen or refresh this file in your browser to see a newer cycle after it has been regenerated. It is not auto-updating and does not poll the broker. Rebuild this file at the end of every cycle (or on request) from the current state log; never hand-edit it directly — the state file is the source of truth, this is a rendered view of it.<br>
+    Last regenerated: <span id="lastRegen">2026-09-10 (framework initialization — no cycles run yet)</span>.
+  </div>
+
+</div>
+
+<script>
+  // Static render for framework-initialization state (equity flat at $100, no trades, no positions).
+  // Future regenerations should replace the embedded data below with values read from state.md.
+  const state = {
+    equity: 100.00,
+    peakEquity: 100.00,
+    todayPnlDollar: 0.00,
+    todayPnlPct: 0.00,
+    openPositions: [],
+    maxConcurrent: 3,
+    closedTrades: [],
+    avgScore: null,
+    equityHistory: [ { t: "Init", v: 100.00 } ],
+    status: "green" // green | amber | red
+  };
+
+  function fmtMoney(v) {
+    const sign = v < 0 ? "-" : "";
+    return sign + "$" + Math.abs(v).toFixed(2);
+  }
+  function pnlClass(v) { return v > 0 ? "pos" : (v < 0 ? "neg" : "neutral"); }
+
+  document.getElementById("statusDot").className = "status-dot " + (state.status === "green" ? "" : state.status);
+  document.getElementById("hdrEquity").textContent = fmtMoney(state.equity);
+  document.getElementById("hdrPnlDollar").textContent = fmtMoney(state.todayPnlDollar);
+  document.getElementById("hdrPnlDollar").className = "value " + pnlClass(state.todayPnlDollar);
+  document.getElementById("hdrPnlPct").textContent = (state.todayPnlPct >= 0 ? "+" : "") + state.todayPnlPct.toFixed(2) + "%";
+  document.getElementById("hdrPnlPct").className = "value " + pnlClass(state.todayPnlPct);
+
+  document.getElementById("heroPnl").textContent = fmtMoney(state.todayPnlDollar);
+  document.getElementById("heroPnl").className = "t-value " + pnlClass(state.todayPnlDollar);
+  document.getElementById("heroOpenCount").textContent = state.openPositions.length + " / " + state.maxConcurrent;
+
+  const drawdownPct = state.peakEquity > 0 ? ((state.peakEquity - state.equity) / state.peakEquity * 100) : 0;
+  document.getElementById("heroEquity").textContent = fmtMoney(state.equity);
+  document.getElementById("heroEquity").parentElement.querySelector(".t-sub").textContent =
+    "peak: " + fmtMoney(state.peakEquity) + " · drawdown " + drawdownPct.toFixed(1) + "%";
+
+  document.getElementById("heroScore").textContent = state.avgScore === null ? "—" : state.avgScore.toFixed(0);
+
+  // Open positions render
+  if (state.openPositions.length > 0) {
+    const grid = document.getElementById("posGrid");
+    grid.innerHTML = "";
+    state.openPositions.forEach(p => {
+      const stopPct = Math.max(0, Math.min(100, p.stopDistancePct));
+      const targetPct = Math.max(0, Math.min(100, p.targetDistancePct));
+      const card = document.createElement("div");
+      card.className = "pos-card";
+      card.innerHTML = `
+        <div class="pc-top">
+          <div><span class="pc-sym">${p.symbol}</span> <span class="pc-strat">${p.strategy}</span></div>
+          <div class="pc-pnl ${pnlClass(p.unrealizedPnl)}">${fmtMoney(p.unrealizedPnl)}</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Stop distance</span><span>${fmtMoney(p.stopDistanceDollar)}</span></div>
+          <div class="bar-track"><div class="bar-fill stop" style="width:${100 - stopPct}%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Target distance</span><span>${fmtMoney(p.targetDistanceDollar)}</span></div>
+          <div class="bar-track"><div class="bar-fill target" style="width:${100 - targetPct}%"></div></div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // Closed trades render
+  if (state.closedTrades.length > 0) {
+    document.getElementById("tradesEmpty").style.display = "none";
+    const body = document.getElementById("tradesBody");
+    state.closedTrades.slice(0, 15).forEach(t => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${t.symbol}</td>
+        <td>${t.strategy}</td>
+        <td>${t.entry}</td>
+        <td>${t.exit}</td>
+        <td class="${pnlClass(t.pnl)}">${fmtMoney(t.pnl)}</td>
+        <td class="${pnlClass(t.r)}">${t.r >= 0 ? "+" : ""}${t.r.toFixed(2)}R</td>
+        <td>${t.score}</td>
+        <td><span class="tag ${t.tag}">${t.tag}</span></td>
+      `;
+      body.appendChild(tr);
+    });
+  } else {
+    document.getElementById("tradesTable").style.display = "none";
+  }
+
+  // Equity sparkline (inline SVG, no library)
+  (function renderChart() {
+    const wrap = document.getElementById("chartWrap");
+    const w = 1100, h = 140, pad = 24;
+    const values = state.equityHistory.map(d => d.v);
+    const min = Math.min(...values) - 1;
+    const max = Math.max(...values) + 1;
+    const range = (max - min) || 1;
+    const stepX = values.length > 1 ? (w - pad * 2) / (values.length - 1) : 0;
+
+    let points = values.map((v, i) => {
+      const x = pad + i * stepX;
+      const y = h - pad - ((v - min) / range) * (h - pad * 2);
+      return [x, y];
+    });
+
+    // If only one point, draw a flat line across the width for visual clarity
+    if (points.length === 1) {
+      points = [[pad, points[0][1]], [w - pad, points[0][1]]];
+    }
+
+    const pathD = points.map((p, i) => (i === 0 ? "M" : "L") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+    const areaD = pathD + ` L${points[points.length-1][0].toFixed(1)},${h-pad} L${points[0][0].toFixed(1)},${h-pad} Z`;
+
+    const svg = `
+      <svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none" style="overflow:visible;">
+        <line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#1e2b22" stroke-width="1"/>
+        <path d="${areaD}" fill="rgba(255,176,0,0.08)" stroke="none"/>
+        <path d="${pathD}" fill="none" stroke="#ffb000" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" style="filter:drop-shadow(0 0 4px rgba(255,176,0,0.5));"/>
+        ${points.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.5" fill="#ffb000"/>`).join("")}
+        <text x="${pad}" y="14" fill="#6f8a78" font-size="10">$${max.toFixed(0)}</text>
+        <text x="${pad}" y="${h-pad-4}" fill="#6f8a78" font-size="10">$${min.toFixed(0)}</text>
+      </svg>
+    `;
+    wrap.innerHTML = svg;
+  })();
+</script>
+</body>
+</html>
