@@ -157,6 +157,7 @@ Log the score with each trade close, plus a one-line note on what worked or didn
 
 - **Fractional-share stops:** Robinhood (and most brokers) cannot attach a resting stop order to a fractional-share position. At $5 per trade, most positions here will be fractional shares. Stops must be checked and enforced manually every cycle per §2.1 — there is no broker-side safety net.
 - **Tool loading:** MCP tools (including Robinhood trading tools) may need to be explicitly searched for/loaded before they appear callable in a given session. A tool that doesn't show up as callable is not necessarily broken — check whether it needs to be loaded first, per §0, before concluding the connection is down.
+- **2026-09-10 — Loop persistence is session-bounded.** The operating loop is driven by this Claude Code session's own recurring scheduler. It only fires while this session remains alive, and recurring jobs auto-expire after 7 days and must be recreated. This means: (a) if the session ends or is reclaimed, cycles stop silently — including manual stop-checks on fractional-share positions that have no broker-side resting stop — and (b) the loop needs to be re-armed at least weekly. A future instance picking this back up should check whether the scheduled loop is still active (list scheduled jobs) at the start of any session, and re-arm it if it has lapsed, rather than assuming a prior session's loop is still running.
 - *(Add new entries below this line as discovered, oldest first, each dated.)*
 
 ---

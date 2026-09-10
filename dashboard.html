@@ -337,7 +337,7 @@
   <div class="panel">
     <div class="panel-title">Open Positions</div>
     <div class="pos-grid" id="posGrid">
-      <div class="empty-state">No open positions. Framework initialized — awaiting first scan cycle.</div>
+      <div class="empty-state">No open positions. Reconciled live with broker at last cycle — awaiting next in-session scan.</div>
     </div>
   </div>
 
@@ -376,7 +376,7 @@
 
   <div class="footer-note">
     <b>Static snapshot, not a live feed.</b> This dashboard reflects data as of the last time it was regenerated from <b>state.md</b> — reopen or refresh this file in your browser to see a newer cycle after it has been regenerated. It is not auto-updating and does not poll the broker. Rebuild this file at the end of every cycle (or on request) from the current state log; never hand-edit it directly — the state file is the source of truth, this is a rendered view of it.<br>
-    Last regenerated: <span id="lastRegen">2026-09-10 (framework initialization — no cycles run yet)</span>.
+    Last regenerated: <span id="lastRegen">2026-09-10 19:54 ET — Cycle 1 (reconciliation, market closed, no trades). Recurring loop armed for regular session hours going forward.</span>.
   </div>
 
 </div>

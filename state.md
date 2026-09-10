@@ -27,7 +27,16 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ## Cycle Log
 
-*(No cycles have run yet. The first cycle entry will be appended below this line when the operating loop starts. Do not remove this placeholder note until the first real entry exists — it documents that the log is intentionally empty at framework-initialization time, not that logging was skipped.)*
+### Cycle 1 — 2026-09-10 19:54 ET (23:54 UTC)
+
+- **Trigger:** Manual — operating loop start-up, requested by user.
+- **Stop-check:** N/A — no open positions.
+- **Account reconciliation (live pull):** Total value $100.00 · Cash $100.00 · Equity value $0.00 · Buying power $100.00. Matches the $100 baseline exactly. No open positions confirmed via `get_equity_positions`.
+- **Market/sector read:** Not performed this cycle — regular session is closed (current time 7:54 PM ET; session hours are 9:30 AM–4:00 PM ET, weekdays). No price-first read is meaningful with the market closed.
+- **Scans:** Not run this cycle — both strategies require live, in-session price action (mean-reversion tiers are time-of-session-gated; momentum requires the opening range and intraday relative strength). Full parallel scans resume automatically at the next in-session cycle.
+- **Entries/exits:** None.
+- **Daily stats:** Unchanged — $0.00 realized/unrealized P&L, 0 trades (organic or forced), daily loss limit not hit, circuit breaker not tripped.
+- **Loop status:** Recurring scheduler armed (see below) to resume cycles automatically during the next regular session and every regular session going forward, subject to the session-persistence caveat logged in framework.md §6.
 
 ---
 
