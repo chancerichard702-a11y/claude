@@ -171,6 +171,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ---
 
+### Resilience watchdog — 2026-09-11 11:09 ET (15:09 UTC)
+
+- **Trigger:** Hourly resilience watchdog Routine (`:07`).
+- **Finding:** Trading-cycle job missing (last known good: `73b0ef5c`, confirmed present at 14:57 UTC by the `:57` fast-recreate watchdog — ~12 minute gap this time). Daily check-in and weekly re-arm Routines both confirmed present and enabled — no action needed there.
+- **Action:** Recreated Job 1 verbatim per framework.md §7.5. New job id: `d169466f`.
+- **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred).
+
+---
+
 ### Cycle 1 — 2026-09-10 19:54 ET (23:54 UTC)
 
 - **Trigger:** Manual — operating loop start-up, requested by user.
