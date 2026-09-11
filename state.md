@@ -116,6 +116,13 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Daily stats:** Unchanged — $0.00 P&L, 0 trades, no limits hit, circuit breaker not tripped.
 - **Next:** full parallel scans resume automatically once the job's next in-session fire lands at/after 9:30 ET (market opens today at 9:30 ET / 13:30 UTC).
 
+### Config change — 2026-09-11 13:0X UTC — notification channel switched to PushNotification
+
+- **Trigger:** User asked to be notified through Claude, not text.
+- **Change:** framework.md §2.7.5 and §7.5 Job 1 updated — all trading-loop notifications now go via `PushNotification`, never `mcp__Inkbox__inkbox_imessage_send`. This was already the case for Jobs 2-4 (Routines) due to the earlier-logged connector restriction; Job 1 (the only one still texting via Inkbox, since it fires into this already-connected session) is now aligned.
+- **Live job replaced immediately:** the running trading-cycle `CronCreate` job (`0691e99b`) was deleted and recreated (`702de5b4`) with the updated notification instructions, rather than waiting for a watchdog-triggered recreation to pick up the change.
+- **Account:** flat, $100, no open positions — no trading impact from this config change.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
