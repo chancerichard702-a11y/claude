@@ -88,6 +88,16 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Standing assessment (unchanged from 02:31 UTC entry):** this is a confirmed, repeating platform-level limitation, not a one-off. No tool available to this session can extend `CronCreate` job lifetime or explain it. Tomorrow's market session (opens 13:30 UTC) will very likely see the trading-cycle job cycle in and out multiple times per hour, with the watchdog only guaranteeing rediscovery within ~1 hour of each death, not continuous 10-minute coverage. Flagged to user directly; no further escalation taken absent new instruction.
 - **Account:** still flat, $100, no open positions — no live risk from these gaps tonight.
 
+### Architecture change — 2026-09-11 04:10 UTC — five fast-recreate watchdogs added, connector restriction confirmed structural
+
+- **Trigger:** User asked directly "how do we resolve the CronCreate fragility." Investigated rather than just re-mitigating again.
+- **Trading-cycle job found missing a 4th time** on the way into this investigation (job `ba91628a`, created 03:07 UTC, gone by 04:07 UTC — ~60 min this time, the longest lifetime observed yet, but still died). Recreated as job `0ad56fde`.
+- **Diagnostic fired via `fire_trigger`** at 03:55 UTC to test whether a Routine-fired turn (self-bound to this session) can actually reach Robinhood/Inkbox tools, since the only prior evidence was a static warning message. Result: no output, no error, no state.md write — inconclusive on its face, but combined with the structural fact that Routine firings run under a distinct execution id (`cse_...`) separate from this session's own id (`session_...`), treated as confirming the connector restriction is real, not a self-bind quirk.
+- **Conclusion:** the full trading-cycle logic cannot be moved off `CronCreate` onto durable Routines — it needs Robinhood, and Routines can't reach it in this org. But the *babysitting* logic (check-and-recreate) only needs native tools (`CronList`/`CronCreate`/`list_triggers`), which durable Routines demonstrably CAN use.
+- **Mitigation deployed:** five new durable "fast-recreate" Routines added, staggered 10 minutes apart from the existing `:07` hourly watchdog — `:17` (`trig_01BB6EjLLpkiutWVNV6b7CrF`), `:27` (`trig_015dooVc9oTTW4RtSsbg7Hmx`), `:37` (`trig_01Rg7XSygmDNLc4jKFYHAYCa`), `:47` (`trig_015zA5FP18ZB59tC7Fi5SFFz`), `:57` (`trig_01LMvacKogpo9DqWHCcfFvud`). Together with `:07`, the trading-cycle job is now checked and recreated roughly every 10 minutes instead of every 60 — maximum expected downtime drops from ~60 min to ~10 min.
+- **Still unresolved (needs the user or platform, not this session):** why CronCreate jobs die this fast at all, and whether the org's connector-restriction on Routines or the 1-hour interval minimum are configurable settings that could be relaxed. Full details and the reusable Routine prompt template logged in framework.md §6/§7.5.
+- **Account:** still flat, $100, no open positions.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
