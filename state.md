@@ -61,6 +61,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Residual risk (unchanged, now bounded instead of unbounded):** if this session/container dies, live 10-minute stop-check coverage drops for up to ~1 hour until the watchdog notices and recreates it. Any open fractional-share position during that window still has zero broker-side stop protection — this is a known, accepted gap per framework.md §6, not eliminated.
 - **Daily stats:** Unaffected — $0.00 P&L, 0 trades, no limits hit.
 
+### Resilience watchdog — 2026-09-11 02:08 UTC — trading-cycle job found missing, recreated
+
+- **Trigger:** Scheduled hourly watchdog Routine (`trig_01H1NeNZZeQr7btfKHnoYYHr`) fired at 02:08 UTC, ~13 minutes after the trading-cycle CronCreate job (`72d1973c`) was created at 01:48 UTC.
+- **Finding:** `CronList` came back empty — the trading-cycle job was already gone. The three durable Routines (daily check-in, watchdog itself, weekly re-arm/review) were all still present and enabled — no action needed on those.
+- **Notable and worse than expected:** this is not an overnight-inactivity or long-idle case — the job vanished within ~13 minutes of creation, in what is nominally "the same session" (this watchdog fired back into `session_013BxMT4x1iYAL2yJgtETT4m`, the same session ID that created the job). `CronCreate`'s in-memory job store appears not to survive even a short resume/wake cycle, not just extended container reclaim. This makes the hourly watchdog's job more essential than originally scoped in §6/§7.5 — the true MTBF for a session-only job may be well under an hour, not "until the container is reclaimed for inactivity."
+- **Remediation:** recreated the trading-cycle job via `CronCreate` (new job id `b990f45c`), same spec as before (`3,13,23,33,43,53 13-20 * * 1-5`).
+- **Account reconciliation:** not re-pulled this watchdog cycle (out of scope for the watchdog; the recreated trading-cycle job will reconcile on its own next fire). No trading action taken.
+- **Follow-up flagged for next full session review:** if this pattern repeats (job gone within single-digit minutes of creation), the effective stop-check coverage gap between failures could be far more frequent than hourly, since the watchdog only catches it once per hour — worth considering a shorter watchdog interval or escalating this as a platform question rather than treating the hourly cadence as sufficient headroom.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
