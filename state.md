@@ -27,6 +27,34 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ## Cycle Log
 
+### Cycle — 2026-09-11 09:34 ET (13:34 UTC) — first in-session cycle, organic Tier A entry
+
+- **Trigger:** Scheduled CronCreate trading-cycle job, first firing after market open.
+- **Stop-check:** N/A — flat entering this cycle (no open positions).
+- **Account reconciliation (live pull):** Total value $100.00 · Cash $100.00 · Buying power $100.00 · 0 open positions. Matches baseline.
+- **Market/sector read (price-first):** SPX 7672.75, NDX 29405.15 — both bouncing ~+1% after three consecutive down days (SPX 7673.52→7636.36→7591.70; NDX 29507.70→29421.55→29103.51). News confirms macro/external driver: in-line August CPI (0.4% MoM, 3.4% YoY) relieving several days of pressure from Brent crude >$100 (Iran-related tanker strikes), 10Y/30Y yields at multi-year highs (30Y ~5.24–5.34%), and hawkish Fed repricing (~67–70% odds of a hike). Tech/semis leading today's bounce (XLK +1.1%, SOXX +1.4%).
+- **Scans (full universe, both strategies, parallel):**
+  - *Mean-reversion* (mkt cap ≥$2B, price ≥$10, 30d avg vol ≥1M sh, 1-week %chg ≤ -6%, today %chg ≥ +2%): 13 candidates — ALAB, VRT, SHOP, CAVA, BIRK, CELH, UPST, NAVN, M, LEGN, EQPT, CIFR, FIGS.
+  - *Momentum* (mkt cap ≥$2B, price ≥$10, 30d avg vol ≥1M sh, today %chg ≥ +3%): 42 candidates (GEV, DELL, ISRG, BE, VRT, NTAP, NVT, ANF, CDW, SHOP, QRVO, SWKS, APH, PBF, URBN, RAL, HPE, COHU, LGN, CVI, FND, HTFL, HPQ, AYA, CELH, UPST, WRBY, MMED, LBRT, NAVN, GME, HMY, BETA, RXO, BBWI, TRVI, AVAH, PATH, RKT, VFC, KEP, MFG). **All momentum candidates structurally gate-blocked this cycle** — session is ~5 min old, well inside the mandatory "never enter within first 30–60 min of open" exclusion (momentum.md gate 4). No momentum evaluation performed; will re-scan next cycle once past the opening range.
+- **Mean-reversion gate-check verdicts (Tier A, first ~90 min):**
+  - **VRT (Vertiv) — ENTRY.** (1) External cause: PASS — Benzinga (9/9) explicitly attributes VRT's -8.5% day and the prior 2-day ~15% slide to the oil/yield/Fed-hike macro shock hitting "the long-duration end of the AI power and data center trade," not a company-specific event; no negative company news found (the only recent company news is a well-received $2.6B accretive acquisition, 9/2). (2) Fundamentals: PASS — Benzinga Edge scorecard Growth 99.4, Quality 95.41, Momentum 88.51 (bullish); next earnings not until 10/21 with EPS/revenue estimates up sharply YoY; no guidance cuts or misses. (3) Upside anchor: PASS — analyst consensus Buy, avg target $369.17 (~+44% above entry), recent upgrades (GLJ $381 target 8/7); $250/200-day-SMA ($256.33) flagged as key support. (4) Dislocation vs downtrend: PASS — VRT had been range-bound (~$250–$290) for 5+ weeks, made a local high just 2 sessions ago (9/8 close $290.83) before the sharp 9/9–9/10 macro-driven drop to $248.13 — a fresh dislocation off a range high, not a multi-week grinding downtrend.
+  - ALAB — SKIP. Q1/Q4 ambiguous: price action inconsistent with a clean macro-driven dislocation (ALAB was actually *up* 5.7% on the 9/9 broad selloff day that hit VRT, then down the next day) — reads as noisy chop within a range rather than a fresh single dislocation, undermining Tier A quality bar.
+  - SHOP — SKIP, Q1 FAIL. Benzinga (9/8) explicitly states the SHOP decline "appears more stock-specific than part of a broader technology selloff," tied to ARK Invest profit-taking after a 25%+ August rally — not a clean external/macro cause.
+  - CAVA — SKIP, Q1 unconfirmed. No article found pinpointing an external cause for the specific 9/8–9/10 drop; prior food-safety scare (Cyclospora) was already resolved per 8/12 earnings beat. Without confirmed external cause, cannot pass gate 1 — treated as fail-safe skip rather than assumed pass.
+  - BIRK, CELH, UPST, NAVN, M, LEGN, EQPT, CIFR, FIGS — not individually deep-dived this cycle (time-boxed); a qualifying Tier A setup (VRT) was found and per mean_reversion.md "do not skip a Tier A setup in favor of waiting/looking further," it was taken. Will revisit remaining candidates on a future cycle if they persist in the scan and no better use of the analysis time exists.
+- **Entry — VRT:**
+  - Side: BUY, $5.00 market order — **FILLED**: 0.019402 sh @ avg $257.6999, account ••••3051, order id `6aa4053d-051c-4cde-ae70-409306946f48`.
+  - Thesis: macro/rate-shock dislocation in a long-duration AI-power name, bouncing today with the broader tape on CPI relief; buying the reversion off a fresh 2-day ~15% drop, not a structural downtrend.
+  - Stop: $245.00 (below the $250 psychological / 200-day-SMA support cited as the "line in the sand"). Risk ≈ $12.07/share (~4.7%).
+  - Target: 2R ≈ $281.20 (near the pre-drop 9/8 range, $280–290 area) — trim into 2R+ per position-management rules.
+  - Max holding horizon: intraday preferred; hold overnight only if thesis still intact (no invalidating news, no unexpected sector reversal) — next earnings not until 10/21, so no near-term overnight catalyst risk.
+  - Order type: market, dollar-based ($5.00), regular hours, GFD.
+  - Tier: A. Forced trade: No — this is an organic, gate-passing entry.
+- **Daily stats:** 1 organic entry today (VRT), 0 exits, 0 forced trades. Realized P&L $0.00 (position just opened, unrealized P&L pending fill confirmation). Daily loss limit ($15) not approached. Circuit breaker not tripped. Position slots: 1 of 3 open (2 remaining).
+- **Loop status:** Notifications channel = PushNotification (per 2026-09-11 config change). Resilience check (CronList / list_triggers) to follow this entry per step 12 of the cycle job.
+
+---
+
 ### Cycle 1 — 2026-09-10 19:54 ET (23:54 UTC)
 
 - **Trigger:** Manual — operating loop start-up, requested by user.

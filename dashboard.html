@@ -360,12 +360,13 @@
   <div class="panel">
     <div class="panel-title">Regime Read</div>
     <div class="chip-row" id="regimeChips">
-      <span class="chip">SPX — awaiting first cycle</span>
-      <span class="chip">SECTORS — awaiting first cycle</span>
+      <span class="chip up">SPX +1% (bounce after 3 down days)</span>
+      <span class="chip up">NDX +1% (bounce)</span>
+      <span class="chip up">XLK / SOXX leading (+1.1% / +1.4%)</span>
     </div>
     <div class="regime-note">
       <span class="rn-label">Last cycle interpretation</span>
-      <span id="regimeNote">No cycles run yet. Regime read will populate here — price divergence first, news second, per framework.md §2.3.</span>
+      <span id="regimeNote">Broad tape bouncing off in-line August CPI relief after several days of pressure from Brent crude &gt;$100 (Iran tanker strikes), 10Y/30Y yields at multi-year highs, and hawkish Fed repricing (~67-70% hike odds). Tech/semis leading today's relief rally — consistent with a rate-driven dislocation reversing, not a fundamental shift.</span>
     </div>
   </div>
 
@@ -376,7 +377,7 @@
 
   <div class="footer-note">
     <b>Static snapshot, not a live feed.</b> This dashboard reflects data as of the last time it was regenerated from <b>state.md</b> — reopen or refresh this file in your browser to see a newer cycle after it has been regenerated. It is not auto-updating and does not poll the broker. Rebuild this file at the end of every cycle (or on request) from the current state log; never hand-edit it directly — the state file is the source of truth, this is a rendered view of it.<br>
-    Last regenerated: <span id="lastRegen">2026-09-11 09:24 ET — Pre-open reconciliation cycle (market opens 9:30 ET, no trades yet). Loop live; notifications now via Claude push, not text.</span>.
+    Last regenerated: <span id="lastRegen">2026-09-11 09:42 ET — First in-session cycle. Organic Tier A mean-reversion entry: VRT $5.00 (macro/rate-shock dislocation bounce). Momentum structurally gate-blocked (within first 30-60 min of open). Loop live; notifications via Claude push.</span>.
   </div>
 
 </div>
@@ -385,15 +386,25 @@
   // Static render for framework-initialization state (equity flat at $100, no trades, no positions).
   // Future regenerations should replace the embedded data below with values read from state.md.
   const state = {
-    equity: 100.00,
+    equity: 99.99,
     peakEquity: 100.00,
-    todayPnlDollar: 0.00,
-    todayPnlPct: 0.00,
-    openPositions: [],
+    todayPnlDollar: -0.01,
+    todayPnlPct: -0.01,
+    openPositions: [
+      {
+        symbol: "VRT",
+        strategy: "Mean-reversion (Tier A)",
+        unrealizedPnl: -0.01,
+        stopDistanceDollar: 0.25,
+        targetDistanceDollar: 0.46,
+        stopDistancePct: 15,
+        targetDistancePct: 15
+      }
+    ],
     maxConcurrent: 3,
     closedTrades: [],
     avgScore: null,
-    equityHistory: [ { t: "Init", v: 100.00 } ],
+    equityHistory: [ { t: "09:34", v: 100.00 }, { t: "09:42", v: 99.99 } ],
     status: "green" // green | amber | red
   };
 
