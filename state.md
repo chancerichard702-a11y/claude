@@ -70,6 +70,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Account reconciliation:** not re-pulled this watchdog cycle (out of scope for the watchdog; the recreated trading-cycle job will reconcile on its own next fire). No trading action taken.
 - **Follow-up flagged for next full session review:** if this pattern repeats (job gone within single-digit minutes of creation), the effective stop-check coverage gap between failures could be far more frequent than hourly, since the watchdog only catches it once per hour — worth considering a shorter watchdog interval or escalating this as a platform question rather than treating the hourly cadence as sufficient headroom.
 
+### Resilience watchdog — 2026-09-11 02:31 UTC — trading-cycle job missing AGAIN, second time in under an hour
+
+- **Trigger:** User asked "is everything ready for tomorrow morning" — checked CronList proactively rather than waiting for the next scheduled watchdog fire (03:07 UTC).
+- **Finding:** the trading-cycle job recreated by the watchdog at 02:08 UTC (job `b990f45c`) was already gone by 02:31 UTC — a ~23 minute lifetime. This is the **second** disappearance in under an hour (previously: created 01:48 UTC, gone by 02:08 UTC, ~13 min lifetime).
+- **Pattern is now confirmed, not a one-off:** two consecutive short lifetimes (13 min, 23 min) strongly suggest the effective MTBF for a `CronCreate` job in this environment is on the order of 15-25 minutes, not "until the container is reclaimed for inactivity" as originally assumed in §6. At that MTBF, the job will very likely be dead for the majority of any given hour during tomorrow's market session — the hourly watchdog interval is not tight enough to keep meaningful 10-minute stop-check coverage live; it only guarantees *rediscovery* within an hour, not *coverage*.
+- **Remediation:** recreated the trading-cycle job a third time (job `3d30f1ff`), same spec.
+- **Open question, unresolved:** why `CronCreate` jobs die this fast in this environment is still not understood — this is now flagged as a priority item for the next full session/weekly review, and arguably for the user to raise with the platform directly, since no tool available to this session can extend a job's survival or explain the short MTBF.
+- **Risk for 2026-09-11 US market session (opens 13:30 UTC):** real, not hypothetical. If this pattern holds, most 10-minute stop-checks during market hours may simply not fire, and the hourly watchdog will only notice and recreate the job well after the fact each time. Account is currently flat ($100, no positions), so there is no open position exposed to this gap right now — but any position opened tomorrow would be running with materially weaker stop coverage than framework.md §2.1 assumes.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
