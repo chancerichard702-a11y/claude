@@ -1,4 +1,3 @@
-
 {
   "permissions": {
     "allow": [
@@ -25,6 +24,12 @@
       "mcp__robinhood__create_scan",
       "mcp__robinhood__get_scanner_datapoints",
       "mcp__robinhood__get_scanner_filter_specs"
+    ]
+  },
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Sending an iMessage/SMS via Inkbox (mcp__Inkbox__inkbox_imessage_send) to +17275987922 — the account owner's own verified phone number, explicitly linked for trading-loop notifications"
     ]
   }
 }
