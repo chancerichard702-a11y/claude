@@ -100,6 +100,17 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ---
 
+### Resilience watchdog — 2026-09-11 10:09 ET (14:09 UTC)
+
+- **Trigger:** Hourly resilience watchdog Routine (`:07`, fired at 14:09:11 UTC).
+- **Finding:** `CronList` returned "No scheduled jobs" — the trading-cycle job (last confirmed healthy at 13:57 UTC by the `:57` fast-recreate watchdog, ~12 minutes prior) had died again. Consistent with the previously-documented sub-hour MTBF pattern (framework.md §6).
+- **Action:** Recreated Job 1 verbatim per framework.md §7.5 (cron `3,13,23,33,43,53 13-20 * * 1-5`, recurring, full prompt unchanged). New job id: `9fc47316`.
+- **Other Routines checked:** `list_triggers` confirmed the daily check-in, all six staggered fast-recreate watchdogs, and the one-shot re-arm+weekly-review Routine are all present and enabled — no recreation needed there.
+- **Gap:** ~12 minutes of missed trading-cycle coverage (13:57–14:09 UTC) during market hours. VRT position was unmonitored by this loop during that window, though no adverse move is evident (price stayed well clear of stop across the surrounding cycles).
+- **Notification:** PushNotification sent per this watchdog's own rule (step 3/4 — recreation occurred, so a notification is required).
+
+---
+
 ### Cycle 1 — 2026-09-10 19:54 ET (23:54 UTC)
 
 - **Trigger:** Manual — operating loop start-up, requested by user.
