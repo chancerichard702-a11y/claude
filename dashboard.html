@@ -377,7 +377,7 @@
 
   <div class="footer-note">
     <b>Static snapshot, not a live feed.</b> This dashboard reflects data as of the last time it was regenerated from <b>state.md</b> — reopen or refresh this file in your browser to see a newer cycle after it has been regenerated. It is not auto-updating and does not poll the broker. Rebuild this file at the end of every cycle (or on request) from the current state log; never hand-edit it directly — the state file is the source of truth, this is a rendered view of it.<br>
-    Last regenerated: <span id="lastRegen">2026-09-11 09:43 ET — No-op cycle, holding VRT (stop clear). Re-scanned both strategies: no new mean-reversion candidate cleared the gate (ELF/MSTR/PURR/FTAI all skipped); momentum still gate-blocked (within first 30-60 min of open). Loop live; notifications via Claude push.</span>.
+    Last regenerated: <span id="lastRegen">2026-09-11 09:53 ET — No-op cycle, holding VRT (stop clear). Re-scanned both strategies: no new mean-reversion candidate cleared the gate (IT/BIDU/CRCL/PATH/MSTR all skipped); momentum still gate-blocked (within first 30-60 min of open). Loop live; notifications via Claude push.</span>.
   </div>
 
 </div>
@@ -386,19 +386,19 @@
   // Static render for framework-initialization state (equity flat at $100, no trades, no positions).
   // Future regenerations should replace the embedded data below with values read from state.md.
   const state = {
-    equity: 99.99,
+    equity: 99.96,
     peakEquity: 100.00,
-    todayPnlDollar: -0.01,
-    todayPnlPct: -0.01,
+    todayPnlDollar: -0.04,
+    todayPnlPct: -0.04,
     openPositions: [
       {
         symbol: "VRT",
         strategy: "Mean-reversion (Tier A)",
-        unrealizedPnl: -0.01,
-        stopDistanceDollar: 0.25,
-        targetDistanceDollar: 0.46,
-        stopDistancePct: 15,
-        targetDistancePct: 15
+        unrealizedPnl: -0.04,
+        stopDistanceDollar: 0.21,
+        targetDistanceDollar: 0.49,
+        stopDistancePct: 19,
+        targetDistancePct: 19
       }
     ],
     maxConcurrent: 3,
