@@ -1,1 +1,30 @@
 
+{
+  "permissions": {
+    "allow": [
+      "mcp__Inkbox__inkbox_imessage_send",
+      "mcp__robinhood__place_equity_order",
+      "mcp__robinhood__cancel_equity_order",
+      "mcp__robinhood__get_portfolio",
+      "mcp__robinhood__get_equity_positions",
+      "mcp__robinhood__get_equity_quotes",
+      "mcp__robinhood__get_equity_historicals",
+      "mcp__robinhood__get_equity_technical_indicators",
+      "mcp__robinhood__get_equity_news",
+      "mcp__robinhood__get_equity_fundamentals",
+      "mcp__robinhood__get_equity_tradability",
+      "mcp__robinhood__get_accounts",
+      "mcp__robinhood__get_equity_orders",
+      "mcp__robinhood__review_equity_order",
+      "mcp__robinhood__get_index_quotes",
+      "mcp__robinhood__get_index_historicals",
+      "mcp__robinhood__get_indexes",
+      "mcp__robinhood__search",
+      "mcp__robinhood__run_scan",
+      "mcp__robinhood__get_scans",
+      "mcp__robinhood__create_scan",
+      "mcp__robinhood__get_scanner_datapoints",
+      "mcp__robinhood__get_scanner_filter_specs"
+    ]
+  }
+}
