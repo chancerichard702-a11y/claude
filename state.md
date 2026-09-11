@@ -98,6 +98,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Still unresolved (needs the user or platform, not this session):** why CronCreate jobs die this fast at all, and whether the org's connector-restriction on Routines or the 1-hour interval minimum are configurable settings that could be relaxed. Full details and the reusable Routine prompt template logged in framework.md §6/§7.5.
 - **Account:** still flat, $100, no open positions.
 
+### Pre-market manual check — 2026-09-11 13:00 UTC — trading-cycle job found missing, recreated ~30 min before open
+
+- **Trigger:** User asked "everything good to go for market open?" ~29 minutes before the 13:30 UTC open. Did a full manual check rather than trusting the last automated confirmation.
+- **Finding:** the trading-cycle job (`0ad56fde`, created 04:10 UTC, confirmed alive by the `:57` fast-recreate watchdog at 12:57:20 UTC) was gone by the time of this manual check at ~13:00:33 UTC — died within a roughly 3-minute window, right before the open. This is exactly the residual gap the fast-recreate mitigation accepted: real, but now capped at ~10 min instead of ~60.
+- **Remediation:** recreated immediately (job `0691e99b`) rather than waiting for the next scheduled watchdog fire at 13:07 UTC, to minimize any gap heading into the open.
+- **Routines status:** all 8 durable Routines (daily check-in, 6-way staggered watchdogs, weekly re-arm/review) confirmed present and enabled via `list_triggers` — healthy.
+- **Account:** flat, $100, no open positions — no live risk from tonight's gaps carries into the open.
+- **Bottom line for market open:** loop is live as of this check. The known, accepted residual risk stands: if the job dies again during the session, up to ~10 minutes of missed 10-minute stop-checks could occur before a fast-recreate watchdog catches it. Not eliminated — bounded.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
