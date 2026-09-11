@@ -377,7 +377,7 @@
 
   <div class="footer-note">
     <b>Static snapshot, not a live feed.</b> This dashboard reflects data as of the last time it was regenerated from <b>state.md</b> — reopen or refresh this file in your browser to see a newer cycle after it has been regenerated. It is not auto-updating and does not poll the broker. Rebuild this file at the end of every cycle (or on request) from the current state log; never hand-edit it directly — the state file is the source of truth, this is a rendered view of it.<br>
-    Last regenerated: <span id="lastRegen">2026-09-11 10:43 ET — No-op cycle, holding VRT (stop clear). Momentum universe swelled to 105 names up 3%+ — confirms a broad market-wide rally, not a stock-picking regime; DELL forming a base but still moving in lockstep with its own peer group (HPQ/HPE/SMCI), failing RS-divergence gate. Mean-reversion: BLDR/ZG/Z skipped (real downtrends). Loop healthy.</span>.
+    Last regenerated: <span id="lastRegen">2026-09-11 12:07 ET — First cycle to actually fire in 84 minutes (job kept dying before its next scheduled run — see framework.md §6). Holding VRT, stop clear, account back near breakeven. Momentum universe now 131 names up 3%+ — broad rally continues to strengthen; hardware cluster (DELL/HPE/HPQ/SMCI) still moving in lockstep, no RS divergence. Mean-reversion: TEM/UPST skipped (real downtrends). Loop healthy this cycle.</span>.
   </div>
 
 </div>
@@ -386,19 +386,19 @@
   // Static render for framework-initialization state (equity flat at $100, no trades, no positions).
   // Future regenerations should replace the embedded data below with values read from state.md.
   const state = {
-    equity: 99.98,
+    equity: 100.00,
     peakEquity: 100.00,
-    todayPnlDollar: -0.02,
-    todayPnlPct: -0.02,
+    todayPnlDollar: 0.00,
+    todayPnlPct: 0.00,
     openPositions: [
       {
         symbol: "VRT",
         strategy: "Mean-reversion (Tier A)",
-        unrealizedPnl: -0.02,
-        stopDistanceDollar: 0.22,
-        targetDistanceDollar: 0.48,
-        stopDistancePct: 18,
-        targetDistancePct: 18
+        unrealizedPnl: 0.00,
+        stopDistanceDollar: 0.25,
+        targetDistanceDollar: 0.45,
+        stopDistancePct: 26,
+        targetDistancePct: 26
       }
     ],
     maxConcurrent: 3,
