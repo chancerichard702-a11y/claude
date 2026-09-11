@@ -78,6 +78,18 @@ Max concurrent positions (3) is shared across **all active strategies combined**
 - Take no new entry until a slot frees up.
 - A candidate that would have qualified but arrived while the cap was full still gets logged as a skip with the reason "cap full" — this is a real data point about opportunity cost, not a non-event.
 
+### 2.7.5 — Push notifications
+
+Every cycle, after logging, send a push notification (not a routine one — see the notification tool's own fatigue guidance) when, and only when:
+
+- A new entry was placed this cycle (symbol, strategy, tier/gate, size, stop, target).
+- A position was closed this cycle (symbol, exit reason, $P&L, R-multiple, trade score).
+- The circuit breaker tripped this cycle (15% drawdown from peak — size halved, new entries paused pending user review).
+- The daily loss limit was hit this cycle (no further entries today).
+- Anomalous data was found and new entries were halted (per §7).
+
+A cycle where nothing happened (no trade, no anomaly, no breaker/limit trip) stays silent — do not notify on routine no-ops. Separately, a one-shot reminder is scheduled to warn the user before the recurring loop's 7-day session auto-expiry lapses, so they know to check back in and re-arm it (see §6).
+
 ### 2.8 — Logging and scoring
 
 Log every trade and every skip: entry/exit, size, P&L in dollars and R-multiples, which strategy and which gate tier, thesis, and a plain-language note on what worked or didn't. Score every closed trade per §5.5.
