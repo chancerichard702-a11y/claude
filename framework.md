@@ -161,6 +161,18 @@ Every closed trade gets scored across three components. This makes quality trend
 
 Log the score with each trade close, plus a one-line note on what worked or didn't. Over time this separates "won by luck on a bad process" from "lost despite good process" — both are more useful signals than the win/loss column alone. A high-scoring loss and a low-scoring win should both be flagged as process notes, not treated the same as their P&L sign suggests.
 
+## §5.7 — Weekly Review (recommend-only, human-approved)
+
+This is the mechanism by which the agent actually learns from accumulated trade history, as distinct from just logging it. Bundled with the periodic re-arm check-in (since a genuinely recurring weekly cron job doesn't survive the 7-day session cap — see §6), roughly once a week the agent:
+
+1. Reads the full trade and skip history in `state.md` since the last review (or since inception, for the first one).
+2. Computes win rate, expectancy, R-multiple distribution, and average trade score, broken out by strategy and by gate tier, plus the forced-vs-organic performance split.
+3. Reviews the skip log specifically: for candidates skipped on a given gate criterion, checks what actually happened to them afterward (when that follow-up was logged) — is a criterion filtering out a disproportionate share of winners, or correctly avoiding losers?
+4. Writes findings to a new dated file under `reviews/` (e.g. `reviews/2026-09-16-weekly-review.md`) with concrete, numbered, data-backed suggestions — never vague impressions.
+5. Sends one push notification that the review is ready.
+
+**This step is recommend-only.** §0's authorization covers autonomous trade execution against a fixed, user-approved rule set — it does not extend to autonomously rewriting that rule set. The agent never edits `framework.md` or a strategy file as part of a review. Suggested changes sit in the report until the user says which (if any) to adopt; only after explicit approval does the agent edit the relevant file, and it logs the before/after plus the approval as a dated entry in that file's own history.
+
 ---
 
 ## §6 — Known Infrastructure Caveats
@@ -170,6 +182,7 @@ Log the score with each trade close, plus a one-line note on what worked or didn
 - **Fractional-share stops:** Robinhood (and most brokers) cannot attach a resting stop order to a fractional-share position. At $5 per trade, most positions here will be fractional shares. Stops must be checked and enforced manually every cycle per §2.1 — there is no broker-side safety net.
 - **Tool loading:** MCP tools (including Robinhood trading tools) may need to be explicitly searched for/loaded before they appear callable in a given session. A tool that doesn't show up as callable is not necessarily broken — check whether it needs to be loaded first, per §0, before concluding the connection is down.
 - **2026-09-10 — Loop persistence is session-bounded.** The operating loop is driven by this Claude Code session's own recurring scheduler. It only fires while this session remains alive, and recurring jobs auto-expire after 7 days and must be recreated. This means: (a) if the session ends or is reclaimed, cycles stop silently — including manual stop-checks on fractional-share positions that have no broker-side resting stop — and (b) the loop needs to be re-armed at least weekly. A future instance picking this back up should check whether the scheduled loop is still active (list scheduled jobs) at the start of any session, and re-arm it if it has lapsed, rather than assuming a prior session's loop is still running.
+- **2026-09-10/11 — Confirmed: scheduled jobs can vanish with zero warning, well inside their stated 7-day/session lifetime.** All three jobs (trading cycle, daily check-in, re-arm reminder) were created, then a `CronList` call shortly after showed none active — no error, no notification, no logged trigger. Root cause unconfirmed (likely an underlying session-level reset). Account happened to be flat (no open positions) when this was discovered, so no risk materialized, but this is exactly the failure mode that matters most given fractional-share positions have no broker-side stop. **Mitigation added:** the trading-cycle job's own prompt now includes a self-check step that calls `CronList` each cycle and silently recreates any of the three jobs found missing, rather than relying solely on the next day's or week's check-in to notice. This does not fully solve the gap between "job disappears" and "next cycle happens to run and notices" — a future instance should treat any observed gap in `state.md` cycle timestamps longer than the cron interval as evidence this happened again, not as a one-off fluke.
 - *(Add new entries below this line as discovered, oldest first, each dated.)*
 
 ---

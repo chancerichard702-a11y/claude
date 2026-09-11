@@ -38,6 +38,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Daily stats:** Unchanged — $0.00 realized/unrealized P&L, 0 trades (organic or forced), daily loss limit not hit, circuit breaker not tripped.
 - **Loop status:** Recurring scheduler armed (see below) to resume cycles automatically during the next regular session and every regular session going forward, subject to the session-persistence caveat logged in framework.md §6.
 
+### Incident — 2026-09-10/11 — Scheduled jobs found missing, no trades affected
+
+- **Trigger:** User asked about text/check-in reminders; while setting up a weekly-review job, a routine `CronList` came back empty — the trading-cycle job, daily 6am Pacific check-in, and re-arm reminder (all created earlier this session) were gone with no error or notification.
+- **Account reconciliation (live pull):** Total value $100.00 · Cash $100.00 · No open positions. Confirmed flat — no risk was live while the schedule was down.
+- **Root cause:** Unconfirmed; logged as an open infrastructure caveat in framework.md §6.
+- **Remediation:** All three jobs recreated (trading cycle `ae4aff02`, daily check-in `ac5db5a3`, combined re-arm+weekly-review one-shot `e464c42d` for 2026-09-16). Trading-cycle job's prompt updated to self-check `CronList` every cycle and silently recreate anything missing.
+- **New capability added:** Weekly review process (framework.md §5.7) — recommend-only, human-approved. First review scheduled for 2026-09-16 alongside the next re-arm check.
+- **Daily stats:** Unaffected — $0.00 P&L, 0 trades, no limits hit.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
