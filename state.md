@@ -180,6 +180,12 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ---
 
+### Fast-recreate watchdog — 2026-09-11 11:17 ET (15:17 UTC)
+
+- Routine `:17` found the trading-cycle job missing (last known good: `d169466f`, confirmed present at 15:09 UTC — only ~8 minute gap this time). Recreated silently, new job id `d5cb1ebc`. No notification sent per this watchdog's own rule.
+
+---
+
 ### Cycle 1 — 2026-09-10 19:54 ET (23:54 UTC)
 
 - **Trigger:** Manual — operating loop start-up, requested by user.
