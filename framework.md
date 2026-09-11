@@ -88,7 +88,7 @@ Every cycle, after logging, send a push notification (not a routine one — see 
 - The daily loss limit was hit this cycle (no further entries today).
 - Anomalous data was found and new entries were halted (per §7).
 
-A cycle where nothing happened (no trade, no anomaly, no breaker/limit trip) stays silent — do not notify on routine no-ops. Separately, a one-shot reminder is scheduled to warn the user before the recurring loop's 7-day session auto-expiry lapses, so they know to check back in and re-arm it (see §6).
+A cycle where nothing happened (no trade, no anomaly, no breaker/limit trip) stays silent — do not notify on routine no-ops. Separately, a one-shot reminder is scheduled to warn the user before the recurring loop's 7-day session auto-expiry lapses, so they know to check back in and re-arm it (see §6). A recurring weekday morning check-in (6:02am Pacific/Nevada time) also runs, independent of the trading cycle job: it verifies the trading-cycle cron job is still alive and that `state.md` has a recent entry, and sends exactly one status push ("loop healthy," "loop down," or "cycles stalled") — this exists because the session (and everything scheduled on it) can be silently reclaimed overnight, and the user needs a positive daily signal rather than having to assume it's fine.
 
 ### 2.8 — Logging and scoring
 
