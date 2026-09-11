@@ -111,6 +111,22 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ---
 
+### Cycle — 2026-09-11 10:13 ET (14:13 UTC) — no-op, holding VRT, momentum evaluated for first time
+
+- **Trigger:** Scheduled CronCreate trading-cycle job (recreated as `9fc47316` by the 14:09 UTC resilience watchdog).
+- **Stop-check:** VRT — current $256.68 vs stop $245.00, clear (~4.5% cushion). No action.
+- **Account reconciliation (live pull):** Total value $99.98 · Cash $95.00 · Equity value (VRT) $4.98 · Buying power $95.00 · 1 open position (VRT, unchanged).
+- **Market/sector read:** SPX 7663.41, NDX 29376.03 — essentially flat/stalling vs the last two cycles; still holding most of the day's ~+1% bounce but momentum has leveled off intraday. No material new macro development.
+- **Scans (full universe, both strategies, parallel):**
+  - *Mean-reversion:* 12 candidates. New: CBRS (Cerebras Systems), TPG. Both checked and SKIPPED — CBRS is extremely volatile/choppy (large swings both directions over the past month, reads as ongoing volatility rather than a clean single dislocation); TPG has a genuine ~2-week sustained downtrend (5 straight down days from the Aug 31 high) — Q4 FAIL, not a fresh dislocation. VRT held, no action. Other persisting candidates (SHOP, CAVA, CELH, BBWI, FIGS, EQPT, BIDU, CRCL) not re-diligenced (no new information).
+  - *Momentum:* evaluated for the first time this session (46 min post-open, past the 30-min floor of the exclusion window). 42 candidates returned, dominated by two clusters: (a) PC/server/hardware names (DELL +10.5%, HPE +10.9%, SMCI +4.7%, HPQ +8.6%) and (b) crypto-proxy names (MSTR, CRCL, RIOT, MARA, BMNR, CLSK, BTDR, GLXY, PURR, BLSH, HUT) tracking a broad bitcoin/crypto-complex rally. Checked intraday (5-min) structure on DELL, HPE, SMCI via historicals: none has completed a genuine pullback-and-higher-low — DELL and SMCI are still grinding to new highs with no pullback at all, HPE has printed only its first down-tick (14:00 UTC bar) which the strategy explicitly says is not sufficient ("not the first tick down... wait for actual structure"). Also could not find same-day (9/11) news confirming an idiosyncratic catalyst for DELL or HPE specifically — both moves look consistent with a broad hardware/tech relief-rally read-through rather than individual RS divergence (gate 1 concern: "uniform sector-wide move... not a signal to chase any name in that group"). The crypto-proxy cluster is explicitly a uniform group-wide move tracking bitcoin (confirmed via a 9/3 article showing the same names moving together on a prior bitcoin rally with "no company-specific news in the tape") — same gate-1 concern. **No momentum candidate qualifies this cycle** — gates 1 and 3 both fail across the board. Will re-evaluate next cycle once more time has passed for genuine structure to form.
+  - No candidate qualified in either strategy. No new entry.
+- **Entries/exits:** None.
+- **Daily stats:** Unchanged — 1 organic entry (VRT) today, 0 exits, 0 forced trades. Realized P&L $0.00, unrealized ≈ -$0.02. Daily loss limit not approached. Circuit breaker not tripped. Position slots: 1 of 3 open (2 remaining).
+- **Loop status:** No notification sent (routine no-op — the earlier resilience-watchdog recreation already sent its own notification at 14:09 UTC, separate from this cycle). Resilience check: CronList confirms trading-cycle job present (`9fc47316`); list_triggers confirms all 8 Routines present and enabled. No recreation needed this cycle.
+
+---
+
 ### Cycle 1 — 2026-09-10 19:54 ET (23:54 UTC)
 
 - **Trigger:** Manual — operating loop start-up, requested by user.
