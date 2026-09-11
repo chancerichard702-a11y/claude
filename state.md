@@ -256,6 +256,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ---
 
+### Resilience watchdog — 2026-09-11 13:08 ET (17:08 UTC)
+
+- **Trigger:** Hourly resilience watchdog Routine (`:07`).
+- **Finding:** Trading-cycle job missing (last known good: `8506939b`, confirmed present at 16:57 UTC — ~10 min gap this check, consistent with the pattern this whole hour). Since the last hourly watchdog note at 16:09 UTC, only **one** trading cycle actually fired (16:07-adjacent `d2a739de` run logged at 16:07 ET/12:07 local) — the rest of this hour has been fast-recreate watchdogs finding the job dead every ~10 minutes, same pattern as the earlier-escalated 74-minute outage. Daily check-in and weekly re-arm Routines both confirmed present and enabled — no action needed there.
+- **Action:** Recreated Job 1 verbatim per framework.md §7.5. New job id: `7a1b58e8`.
+- **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred).
+
+---
+
 ### Cycle 1 — 2026-09-10 19:54 ET (23:54 UTC)
 
 - **Trigger:** Manual — operating loop start-up, requested by user.
