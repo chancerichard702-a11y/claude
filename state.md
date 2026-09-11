@@ -47,6 +47,20 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **New capability added:** Weekly review process (framework.md §5.7) — recommend-only, human-approved. First review scheduled for 2026-09-16 alongside the next re-arm check.
 - **Daily stats:** Unaffected — $0.00 P&L, 0 trades, no limits hit.
 
+### Incident — 2026-09-11 — Loop re-armed with corrected architecture (session-only cron root cause found)
+
+- **Trigger:** User asked to re-arm the loop per §7.5. `CronList` came back empty (all three prior jobs gone — expected, since they were session-only and the prior session had ended).
+- **Account reconciliation (live pull):** Total value $100.00 · Cash $100.00 · No open positions. Confirmed flat — no risk was live while the schedule was down.
+- **Root cause finally confirmed for the 2026-09-10/11 vanishing-jobs incident:** `CronCreate` jobs are explicitly session-only/in-memory per the tool's own documentation — they die the instant the creating session ends, independent of the 7-day expiry. Not a bug; that's how the tool works. See framework.md §6, 2026-09-11 entries.
+- **Fix — architecture changed from 3 jobs/1 mechanism to 4 jobs/2 mechanisms:**
+  1. Trading cycle (10-min cadence, market hours) — stays on `CronCreate` (job `72d1973c`), since durable Routines have a 1-hour minimum interval and can't hit this cadence. Still session-only; still texts via Inkbox (this session holds that connector).
+  2. Daily 6am Pacific check-in — migrated to a durable Routine (`trig_019sgPJ6GxJnju2jUE55SsM3`), so the check-in itself can survive what it's checking for.
+  3. **New:** Hourly resilience watchdog — durable Routine (`trig_01H1NeNZZeQr7btfKHnoYYHr`). Recreates the CronCreate trading-cycle job within ~1 hour of a silent session/container death, capping the previously-unbounded downtime window.
+  4. Re-arm + weekly review — durable Routine, one-shot (`trig_01MLtmEurYCyCJtqtU7vK7DR`), scheduled 2026-09-18T14:00:00Z.
+- **New constraint discovered:** `create_trigger`'s `connectors` parameter is disabled for this org, so none of the three Routines can reach Inkbox or Robinhood tools when they fire. Routines 2-4 fall back to `PushNotification` for any alert instead of iMessage. Texting via Inkbox only happens from Job 1, which fires back into this same already-connected session.
+- **Residual risk (unchanged, now bounded instead of unbounded):** if this session/container dies, live 10-minute stop-check coverage drops for up to ~1 hour until the watchdog notices and recreates it. Any open fractional-share position during that window still has zero broker-side stop protection — this is a known, accepted gap per framework.md §6, not eliminated.
+- **Daily stats:** Unaffected — $0.00 P&L, 0 trades, no limits hit.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
