@@ -123,6 +123,14 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Live job replaced immediately:** the running trading-cycle `CronCreate` job (`0691e99b`) was deleted and recreated (`702de5b4`) with the updated notification instructions, rather than waiting for a watchdog-triggered recreation to pick up the change.
 - **Account:** flat, $100, no open positions — no trading impact from this config change.
 
+### Daily check-in — 2026-09-11 13:18 UTC — trading-cycle job missing again, recreated
+
+- **Trigger:** Scheduled daily 6am Pacific check-in Routine fired (jittered to 13:17:59 UTC).
+- **Finding:** the trading-cycle job replaced at ~13:00 UTC for the notification-channel switch (`702de5b4`) was already gone by 13:18 — an ~18 minute lifetime. Same ongoing pattern logged throughout the day; not new.
+- **Remediation:** recreated (job `54fa1a04`), same spec, PushNotification-based per today's channel switch.
+- **Routines status:** all 8 Routines present and enabled — no action needed there.
+- **Account:** flat, $100, no open positions. Market not yet open (9:30 ET / 13:30 UTC, ~12 min away at time of this check).
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
