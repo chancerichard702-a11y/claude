@@ -79,6 +79,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Open question, unresolved:** why `CronCreate` jobs die this fast in this environment is still not understood — this is now flagged as a priority item for the next full session/weekly review, and arguably for the user to raise with the platform directly, since no tool available to this session can extend a job's survival or explain the short MTBF.
 - **Risk for 2026-09-11 US market session (opens 13:30 UTC):** real, not hypothetical. If this pattern holds, most 10-minute stop-checks during market hours may simply not fire, and the hourly watchdog will only notice and recreate the job well after the fact each time. Account is currently flat ($100, no positions), so there is no open position exposed to this gap right now — but any position opened tomorrow would be running with materially weaker stop coverage than framework.md §2.1 assumes.
 
+### Resilience watchdog — 2026-09-11 03:07 UTC — trading-cycle job missing a THIRD time
+
+- **Trigger:** Scheduled hourly watchdog Routine fired normally at 03:07 UTC.
+- **Finding:** the trading-cycle job manually recreated at 02:31 UTC (job `3d30f1ff`) was already gone — a ~36 minute lifetime this time. Lifetimes observed so far: ~13 min, ~23 min, ~36 min (all three recreations of the same job spec). Trend is noisy but not obviously worsening or improving — average so far ~24 min, well under the 1-hour watchdog interval.
+- **Remediation:** recreated the trading-cycle job a fourth time (job `ba91628a`).
+- **Routines status:** daily check-in and weekly re-arm/review Routines still present and enabled — no action needed there. Watchdog's own last run recorded as succeeded.
+- **Standing assessment (unchanged from 02:31 UTC entry):** this is a confirmed, repeating platform-level limitation, not a one-off. No tool available to this session can extend `CronCreate` job lifetime or explain it. Tomorrow's market session (opens 13:30 UTC) will very likely see the trading-cycle job cycle in and out multiple times per hour, with the watchdog only guaranteeing rediscovery within ~1 hour of each death, not continuous 10-minute coverage. Flagged to user directly; no further escalation taken absent new instruction.
+- **Account:** still flat, $100, no open positions — no live risk from these gaps tonight.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
