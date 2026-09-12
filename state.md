@@ -608,6 +608,10 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Routines status:** All 8 Routines checked via `list_triggers` — all present and enabled. No recreation needed there.
 - **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred).
 
+### Fast-recreate watchdog — 2026-09-11 21:17 ET (2026-09-12 01:17 UTC)
+
+- Routine `:17` found the trading-cycle job missing (last known good: `3a04fbac`, confirmed present at 01:07 UTC — ~10 minute gap). Recreated silently, new job id `6f354014`. No notification sent per this watchdog's own rule.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
