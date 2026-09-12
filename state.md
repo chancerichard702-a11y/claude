@@ -1164,6 +1164,16 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 ---
 
+### Resilience watchdog — 2026-09-12 15:07 ET (2026-09-12 19:07 UTC)
+
+- **Trigger:** Hourly resilience watchdog Routine (`:07`).
+- **Finding:** Trading-cycle job missing (last known good: `cc3fe51d`, confirmed present at 18:57 UTC — ~10 min gap). Same ongoing pattern. Saturday — no cycle expected until Monday.
+- **Action:** Recreated Job 1 verbatim per framework.md §7.5. New job id: `b58369e5`.
+- **Routines status:** All 8 Routines checked via `list_triggers` — all present and enabled. No recreation needed there.
+- **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred).
+
+---
+
 ## Running Daily Stats (resets each session/trading day)
 
 | Date | Trades (organic) | Trades (forced) | Realized P&L | Open Unrealized P&L | Daily loss limit hit? | Circuit breaker status |
