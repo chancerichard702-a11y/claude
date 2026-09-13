@@ -1592,6 +1592,14 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 - Routine `:57` found the trading-cycle job missing (last known good: `8bc91b29`, confirmed present at 07:47 UTC — ~10 minute gap). Recreated silently, new job id `525708e7`. No notification sent per this watchdog's own rule.
 
+### Resilience watchdog — 2026-09-13 04:08 ET (2026-09-13 08:08 UTC)
+
+- **Trigger:** Hourly resilience watchdog Routine (`:07`).
+- **Finding:** Trading-cycle job missing (last known good: `525708e7`, confirmed present at 07:57 UTC — ~10 min gap). Same ongoing pattern. Sunday — no cycle expected until Monday.
+- **Action:** Recreated Job 1 verbatim per framework.md §7.5. New job id: `1786fb61`.
+- **Routines status:** All 8 Routines checked via `list_triggers` — all present and enabled. No recreation needed there.
+- **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred).
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
