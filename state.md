@@ -2516,6 +2516,14 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 - Routine `:57` found the trading-cycle job missing (last known good: `117c746e`, confirmed present at 15:47 UTC — ~10 minute gap). Recreated silently, new job id `e6a0b1e8`. No notification sent per this watchdog's own rule.
 
+### Resilience watchdog — 2026-09-14 12:09 ET (2026-09-14 16:09 UTC)
+
+- **Trigger:** Hourly resilience watchdog (`trig_01H1NeNZZeQr7btfKHnoYYHr`), fired 16:09:03 UTC.
+- **Finding:** `CronList` returned no scheduled jobs (last known good: `e6a0b1e8`, confirmed present at 15:57 UTC — ~12 minute gap, consistent with the ongoing session-only CronCreate fragility).
+- **Action:** Recreated Job 1 verbatim per framework.md §7.5. New job id: `2518b740`.
+- **Routines status:** `list_triggers` confirmed all 8 Routines present and enabled (5 fast-recreate watchdogs, this hourly resilience watchdog, daily 6am Pacific check-in — next fire 2026-09-15 13:02 UTC, weekly re-arm+review one-shot). No Routine recreation needed.
+- **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred).
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
