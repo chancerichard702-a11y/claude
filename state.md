@@ -2562,3 +2562,7 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 | Max drawdown | $0.55 (0.55%) |
 | Average trade score | — |
 | Forced-trade win rate vs. organic-trade win rate | 0% organic (0 of 1); no forced trades yet |
+
+### Fast-recreate watchdog — 2026-09-14 12:27 ET (16:27 UTC)
+
+- `:27` watchdog found the trading-cycle job missing. Recreated verbatim via CronCreate — new job id `b5ebcb6b`, same spec (`3,13,23,33,43,53 13-20 * * 1-5`, recurring).
