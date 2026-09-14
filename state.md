@@ -2452,6 +2452,10 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Daily stats:** 0 organic entries, 0 forced trades, 1 exit (VRT, logged above) today. Realized P&L -$0.55. Daily loss limit ($15) not approached. Circuit breaker not tripped (0.55% drawdown). Position slots: 0 of 3 open (3 available).
 - **Loop status:** No notification sent this cycle (routine no-op — no new entry/exit/circuit-breaker/loss-limit event in this specific cycle; VRT's exit notification was already sent separately). Resilience check: `CronList` confirms trading-cycle job present (`9ae90937`); `list_triggers` confirms all 8 Routines present and enabled. No recreation needed.
 
+### Fast-recreate watchdog — 2026-09-14 09:47 ET (2026-09-14 13:47 UTC)
+
+- Routine `:47` found the trading-cycle job missing (last known good: `9ae90937`, confirmed present at 13:36 UTC cycle — ~11 minute gap). Recreated silently, new job id `6bd9d80b`. No notification sent per this watchdog's own rule.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
