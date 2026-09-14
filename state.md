@@ -2421,6 +2421,10 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Account:** flat, $100, no open positions (unchanged from prior session-close baseline).
 - **Notification:** one status PushNotification sent per this Routine's own rule ("loop was down, jobs missing, just re-armed automatically").
 
+### Fast-recreate watchdog — 2026-09-14 09:27 ET (2026-09-14 13:27 UTC)
+
+- Routine `:27` found the trading-cycle job missing (last known good: `f8fbec0d`, confirmed present at 13:16 UTC — ~11 minute gap). Recreated silently, new job id `9ae90937`. No notification sent per this watchdog's own rule.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
