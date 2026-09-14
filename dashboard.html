@@ -377,7 +377,7 @@
 
   <div class="footer-note">
     <b>Static snapshot, not a live feed.</b> This dashboard reflects data as of the last time it was regenerated from <b>state.md</b> — reopen or refresh this file in your browser to see a newer cycle after it has been regenerated. It is not auto-updating and does not poll the broker. Rebuild this file at the end of every cycle (or on request) from the current state log; never hand-edit it directly — the state file is the source of truth, this is a rendered view of it.<br>
-    Last regenerated: <span id="lastRegen">2026-09-11 12:07 ET — First cycle to actually fire in 84 minutes (job kept dying before its next scheduled run — see framework.md §6). Holding VRT, stop clear, account back near breakeven. Momentum universe now 131 names up 3%+ — broad rally continues to strengthen; hardware cluster (DELL/HPE/HPQ/SMCI) still moving in lockstep, no RS divergence. Mean-reversion: TEM/UPST skipped (real downtrends). Loop healthy this cycle.</span>.
+    Last regenerated: <span id="lastRegen">2026-09-14 09:34 ET — VRT closed via manual stop-check exit after sitting unmonitored since the last logged cycle on 9/11: price had fallen to $228.95, well past the $245.00 stop, before this was caught and sold at avg $229.57 (realized -$0.55, -2.33R). Account back to flat, $99.45 total value. Infra (CronCreate job + all 8 watchdog Routines) has been healthy throughout — the gap was in verifying the trading-cycle logic's last successful full-cycle run, not the job's mere existence. See state.md for full incident writeup.</span>.
   </div>
 
 </div>
@@ -386,25 +386,26 @@
   // Static render for framework-initialization state (equity flat at $100, no trades, no positions).
   // Future regenerations should replace the embedded data below with values read from state.md.
   const state = {
-    equity: 100.00,
+    equity: 99.45,
     peakEquity: 100.00,
-    todayPnlDollar: 0.00,
-    todayPnlPct: 0.00,
-    openPositions: [
+    todayPnlDollar: -0.55,
+    todayPnlPct: -0.55,
+    openPositions: [],
+    maxConcurrent: 3,
+    closedTrades: [
       {
         symbol: "VRT",
         strategy: "Mean-reversion (Tier A)",
-        unrealizedPnl: 0.00,
-        stopDistanceDollar: 0.25,
-        targetDistanceDollar: 0.45,
-        stopDistancePct: 26,
-        targetDistancePct: 26
+        entry: "09/11 09:34 ET",
+        exit: "09/14 09:34 ET",
+        pnl: -0.55,
+        r: -2.33,
+        score: "—",
+        tag: "organic"
       }
     ],
-    maxConcurrent: 3,
-    closedTrades: [],
     avgScore: null,
-    equityHistory: [ { t: "09:34", v: 100.00 }, { t: "09:42", v: 99.99 } ],
+    equityHistory: [ { t: "09/11 09:34", v: 100.00 }, { t: "09/11 12:07", v: 100.00 }, { t: "09/14 09:34", v: 99.45 } ],
     status: "green" // green | amber | red
   };
 

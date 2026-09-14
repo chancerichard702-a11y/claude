@@ -2425,13 +2425,25 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 - Routine `:27` found the trading-cycle job missing (last known good: `f8fbec0d`, confirmed present at 13:16 UTC — ~11 minute gap). Recreated silently, new job id `9ae90937`. No notification sent per this watchdog's own rule.
 
+### Manual stop-check exit — 2026-09-14 09:34 ET (13:34 UTC) — VRT closed, well past stop, weekend gap in coverage
+
+- **Trigger:** User asked how things were going; assistant incorrectly stated VRT had already closed (unverified assumption, never checked). User pushed back ("it says vrt is still open"). Live pull confirmed the user was right — VRT was still open and had never been exited since the 2026-09-11 entry.
+- **What happened:** the position (entered 2026-09-11 09:34 ET at avg $257.71, stop $245.00) was never re-checked by any cycle after Friday's last logged cycle (`16:07 UTC` and the fast-recreate watchdogs immediately after, which only babysit the CronCreate job itself — they do not run the trading logic or a stop-check). No trading-cycle job successfully executed the full 12-step cycle logic again after Friday afternoon through this Monday morning's pre-market watchdogs (all of which correctly skipped trading action since they're infra-only Routines, not Job 1 itself). Job 1 recreations happened repeatedly all weekend/this morning, but weekends are excluded by the job's own cron (`1-5`, weekdays only) and this morning's firings (`:33` mark) were the first eligible in-session slot — this exit was executed manually the moment the live discrepancy was caught, rather than waiting for that next scheduled firing.
+- **Live reconciliation:** `get_equity_positions` confirmed VRT still held (0.019402 sh, avg cost $257.71). `get_equity_quotes` showed VRT trading at $228.95 (bid $228.57 / ask $229.23) — well below the $245.00 stop (stop had been breached by a large margin, likely over the weekend gap and/or Friday afternoon coverage gaps, undetected because no cycle re-ran the stop-check after the last-logged 16:07 UTC cycle on 9/11).
+- **Action taken:** manual market sell, full position (0.019402 sh), account ••••3051, order id `6aa7f7db-9d00-4591-ac70-64ccdaaecbef` — **FILLED** at avg $229.5735/share, 13:34:19 UTC.
+- **P&L:** Realized loss ≈ **-$0.546** on the position ((229.5735 − 257.71) × 0.019402). R-multiple ≈ **-2.33R** (risk was $12.07/share to the $245 stop; actual exit was $28.14/share below entry — the stop was breached by roughly 2.3x the intended risk before being caught).
+- **Root cause:** not the CronCreate/watchdog infrastructure (that's been performing exactly as designed — babysitting Job 1's existence, not its trading logic). The actual gap is that no one — not the watchdogs, not this assistant — was verifying that Job 1 was still successfully running the *full 12-step cycle* (including the stop-check) versus merely *existing* as a scheduled job. A job can exist and still not have fired since Friday if the market was closed (correct, expected) but there was no separate check confirming the first Monday in-session firing actually happened and stop-checked before now.
+- **Account (live, post-exit):** Cash $95.00 (pre-sale) + ~$4.45 sale proceeds ≈ **$99.45** total value. Down from the $100.00 baseline, essentially in line with the realized loss. 0 open positions — flat.
+- **Notification:** PushNotification sent reporting the exit, reason, $P&L, and R-multiple, per Job 1 step 11(b).
+- **Process gap flagged for framework.md §6 (not architecturally fixed per user's standing "leave it as is" instruction — logged for the user's review, not acted on beyond this one exit):** the daily/hourly/fast-recreate watchdogs verify Job 1's *existence* but not its *last successful full-cycle execution timestamp*. A future improvement (for the user to decide on, not this session) could have the daily check-in also flag if the most recent state.md cycle entry (not watchdog entry) is stale during market hours, not just check job presence.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
 
 | Date | Trades (organic) | Trades (forced) | Realized P&L | Open Unrealized P&L | Daily loss limit hit? | Circuit breaker status |
 |---|---|---|---|---|---|---|
-| — | 0 | 0 | $0.00 | $0.00 | No | Not tripped |
+| 2026-09-14 | 0 | 0 | -$0.55 (VRT exit, entered 9/11) | $0.00 | No | Not tripped |
 
 ---
 
@@ -2439,11 +2451,11 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 | Metric | Value |
 |---|---|
-| Total closed trades | 0 |
-| Win rate | — |
+| Total closed trades | 1 (VRT) |
+| Win rate | 0% (0 of 1) |
 | Average win ($ / R) | — |
-| Average loss ($ / R) | — |
-| Expectancy | — |
-| Max drawdown | $0.00 (0.0%) |
+| Average loss ($ / R) | -$0.55 / -2.33R |
+| Expectancy | -$0.55/trade (n=1, not statistically meaningful) |
+| Max drawdown | $0.55 (0.55%) |
 | Average trade score | — |
-| Forced-trade win rate vs. organic-trade win rate | — (no trades yet) |
+| Forced-trade win rate vs. organic-trade win rate | 0% organic (0 of 1); no forced trades yet |
