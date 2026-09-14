@@ -2412,6 +2412,15 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Routines status:** `list_triggers` confirmed all 8 Routines present and enabled (5 fast-recreate watchdogs, this hourly resilience watchdog, daily 6am Pacific check-in, weekly re-arm+review one-shot).
 - **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred). Market opens in ~22min (13:30 UTC / 9:30am ET).
 
+### Daily check-in — 2026-09-14 09:16 ET (2026-09-14 13:16 UTC) — trading-cycle job missing again, recreated
+
+- **Trigger:** Scheduled daily 6am Pacific check-in Routine (`trig_019sgPJ6GxJnju2jUE55SsM3`), fired 13:16:10 UTC — jittered ~14 minutes late from its 13:02 UTC scheduled time (see the 13:08 UTC resilience watchdog's note flagging this same delay).
+- **Finding:** `CronList` returned no scheduled jobs (last known good: `c3a359ab`, confirmed present at 13:08 UTC — ~8 minute gap, consistent with the ongoing session-only CronCreate fragility). `list_triggers` confirmed this daily check-in Routine, the hourly resilience watchdog, and the weekly re-arm+review Routine (and all 5 fast-recreate watchdogs) are present and enabled.
+- **Remediation:** recreated the trading-cycle job (new job id `f8fbec0d`), same spec.
+- **Most recent state.md entry check:** last entry (13:08 UTC resilience watchdog) is ~8 minutes old — well within the "last 10-20 minutes" freshness bar for pre-market. Market opens 13:30 UTC (9:30am ET), ~14 minutes from this check.
+- **Account:** flat, $100, no open positions (unchanged from prior session-close baseline).
+- **Notification:** one status PushNotification sent per this Routine's own rule ("loop was down, jobs missing, just re-armed automatically").
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
