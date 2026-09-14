@@ -2104,6 +2104,10 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 - **Routines status:** `list_triggers` confirmed all 8 Routines present and enabled (5 fast-recreate watchdogs, this hourly resilience watchdog, daily 6am Pacific check-in, weekly re-arm+review one-shot). No Routine recreation needed.
 - **Notification:** PushNotification sent per this watchdog's own rule (recreation occurred).
 
+### Fast-recreate watchdog — 2026-09-13 22:18 ET (2026-09-14 02:18 UTC)
+
+- Routine `:17` found the trading-cycle job missing (last known good: `b1e2e6ef`, confirmed present at 02:07 UTC — ~11 minute gap). Recreated silently, new job id `89933df6`. No notification sent per this watchdog's own rule.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
