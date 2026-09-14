@@ -2676,3 +2676,8 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 ### Fast-recreate watchdog — 2026-09-14 16:57 ET (20:57 UTC)
 
 - `:57` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `093451e1`, same spec. Gap continues, past market close.
+
+### Resilience watchdog — 2026-09-14 17:07 ET (21:07 UTC)
+
+- Hourly `:07` resilience watchdog: trading-cycle job was missing. Recreated verbatim via CronCreate — new job id `d417eb63`, same spec. `list_triggers` confirmed all 8 Routines present and enabled — no Routine recreation needed. PushNotification sent per this watchdog's own rule (recreation occurred).
+- **Session summary (2026-09-14 full day):** current time (21:07 UTC / 17:07 ET) is now outside the job's scheduled hour range (13-20 UTC), so today's trading session is over. Today's only actual executed cycle was the 09:36 ET (13:36 UTC) morning cycle and the 12:14 ET (16:14 UTC) midday cycle — both no-op, flat, no qualifying candidates. From 12:24 ET (16:24 UTC) onward, every watchdog check found the trading-cycle job missing and recreated it, but the job never survived to reach one of its own scheduled fire minutes again — meaning roughly 5 hours of the trading day (12:14 ET to 4pm ET close) had zero actual trading-cycle execution: no stop-checks, no reconciliation, no scans. Account remains flat at $99.45 (unchanged since the 09:34 ET VRT exit), so no risk was realized during the gap, but this is a significant worsening of the previously-flagged process gap (watchdogs confirm job *existence*, not *last successful execution*). Flagging clearly for the user's review at the desk; per their standing "leave it as is" instruction, no architectural change has been made.
