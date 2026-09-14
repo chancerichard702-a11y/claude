@@ -2590,3 +2590,7 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 ### Fast-recreate watchdog — 2026-09-14 13:27 ET (17:27 UTC)
 
 - `:27` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `27610c04`, same spec.
+
+### Fast-recreate watchdog — 2026-09-14 13:37 ET (17:37 UTC)
+
+- `:37` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `6c93332e`, same spec.
