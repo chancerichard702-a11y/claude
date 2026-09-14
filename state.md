@@ -2651,3 +2651,8 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 ### Fast-recreate watchdog — 2026-09-14 15:57 ET (19:57 UTC)
 
 - `:57` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `e99ba3df`, same spec. Gap continues.
+
+### Resilience watchdog — 2026-09-14 16:07 ET (20:07 UTC)
+
+- Hourly `:07` resilience watchdog: trading-cycle job was missing. Recreated verbatim via CronCreate — new job id `f4ca805f`, same spec. `list_triggers` confirmed all 8 Routines present and enabled — no Routine recreation needed. PushNotification sent per this watchdog's own rule (recreation occurred).
+- Gap update: still zero executed trading cycles since the 12:14 ET (16:14 UTC) no-op cycle — now ~4 hours. Continuing to flag each hourly check; no architectural change made per standing instruction.
