@@ -2200,6 +2200,10 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 
 - Routine `:37` found the trading-cycle job missing (last known good: `392c4bf8`, confirmed present at 05:27 UTC — ~10 minute gap). Recreated silently, new job id `0ff02dd8`. No notification sent per this watchdog's own rule.
 
+### Fast-recreate watchdog — 2026-09-14 01:47 ET (2026-09-14 05:47 UTC)
+
+- Routine `:47` found the trading-cycle job missing (last known good: `0ff02dd8`, confirmed present at 05:37 UTC — ~10 minute gap). Recreated silently, new job id `3582a59b`. No notification sent per this watchdog's own rule.
+
 ---
 
 ## Running Daily Stats (resets each session/trading day)
