@@ -2725,3 +2725,7 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 ### Fast-recreate watchdog — 2026-09-14 18:57 ET (22:57 UTC)
 
 - `:57` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `0365bc61`, same spec. Outside session hours, mechanical only.
+
+### Resilience watchdog — 2026-09-14 19:07 ET (23:07 UTC)
+
+- Hourly `:07` resilience watchdog: trading-cycle job was missing. Recreated verbatim via CronCreate — new job id `3984402b`, same spec. `list_triggers` confirmed all 8 Routines present and enabled — no Routine recreation needed. PushNotification sent per this watchdog's own rule (recreation occurred). Outside today's trading hours, no market impact.
