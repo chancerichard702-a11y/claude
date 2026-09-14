@@ -2668,3 +2668,7 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 ### Fast-recreate watchdog — 2026-09-14 16:37 ET (20:37 UTC)
 
 - `:37` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `69c3334e`, same spec. Gap continues (now past the 4pm ET close with zero cycles having executed all session).
+
+### Fast-recreate watchdog — 2026-09-14 16:47 ET (20:47 UTC)
+
+- `:47` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `fbc476ac`, same spec. Gap continues, past market close.
