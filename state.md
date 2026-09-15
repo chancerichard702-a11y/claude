@@ -3061,3 +3061,11 @@ Shared log across both active strategies (mean-reversion, momentum/relative-stre
 ### Fast-recreate watchdog — 2026-09-15 12:57 UTC
 
 - `:57` watchdog found the trading-cycle job missing again. Recreated verbatim via CronCreate — new job id `5bb3d430`, same spec. Outside session hours, mechanical only.
+
+### Resilience watchdog — 2026-09-15 13:08 UTC
+
+- Hourly `:07` resilience watchdog: trading-cycle job was missing again. Recreated verbatim via CronCreate — new job id `761fff5a`, same spec.
+- `list_triggers` health check: all 8 Routines present and enabled — no Routine recreation needed.
+- Observation only (per standing "leave it as is" instruction, not acted on architecturally): daily check-in Routine (`trig_019sgPJ6GxJnju2jUE55SsM3`, cron `2 13 * * 1-5`) still shows `last_fired_at` of 2026-09-14 despite its `next_run_at` of 2026-09-15T13:02:00Z having already passed by this 13:08 check. May be a notification-delivery lag rather than a missed fire — watching for its actual firing on a subsequent check.
+- Trading day context: session window (13-20 UTC) has begun; market opens 13:30 UTC. Zero trading-cycle executions have occurred yet today — job has not survived to any of its own scheduled fire minutes (:03/:13/:23/:33/:43/:53), continuing the severe execution-gap pattern from 2026-09-14.
+- PushNotification sent per this watchdog's own rule (recreation occurred this cycle).
